@@ -5,6 +5,7 @@ import Persons from './components/persons';
 import PhoneService from './components/services/phonebookService';
 import Notification from './components/notification';
 import Error from './components/error';
+import Delete from './components/delete';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -13,6 +14,7 @@ const App = () => {
   const [filterName, setFilterName] = useState('');
   const [success, setSuccess] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [deleteMessage, setDeleteMessage] = useState('');
 
   useEffect(() => {
     PhoneService.getAll().then((initialContact) => setPersons(initialContact));
@@ -91,6 +93,12 @@ const App = () => {
     if (confirmed) {
       PhoneService.toBeDeleted(id);
       setPersons(persons.filter((person) => person.id !== id));
+      setDeleteMessage(
+        `${clickedOn[0].name} has been deleted from your contacat list`
+      );
+      setTimeout(() => {
+        setDeleteMessage(null);
+      }, 5000);
     } else {
       setPersons(persons);
     }
@@ -103,6 +111,12 @@ const App = () => {
       {success !== '' ? <Notification message={success} /> : success}
 
       {errorMessage !== '' ? <Error message={errorMessage} /> : errorMessage}
+
+      {deleteMessage !== '' ? (
+        <Delete message={deleteMessage} />
+      ) : (
+        deleteMessage
+      )}
 
       <Filter filterName={filterName} handleFilter={handleFilter} />
 
